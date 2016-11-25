@@ -1,0 +1,9 @@
+{
+  "name": "listmas",
+  "description": "dumb christmas lists",
+  "profile": "rt",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::710715019992:role/listmas_lambda_function",
+  "environment": {}
+}
