@@ -1,0 +1,3 @@
+{
+    "handler": "main.generate_id"
+}
