@@ -42,6 +42,20 @@
         }
     });
 
+    var ExistingListView = Backbone.View.extend({
+        el: $('#existing_list'),
+        events: {
+            'click button#fetch_list': 'fetchList',
+        },
+        initialize: function () {
+            this.render();
+        },
+        render: function () {
+            $(this.el).html('<input type="text" name="list_id" id="asdf"><button id="fetch_list">fetch list</button>');
+            return this;
+        },
+    });
+
     var List = Backbone.Model.extend({
         defaults: {
             id: 'a1',
@@ -113,6 +127,7 @@
     idGeneratorView = new IdGeneratorView({model: idGenerator});
 
     listView = new ListView();
+    e = new ExistingListView();
 
 //    list.save({}, {
 //        success: function (model, response, options) {
