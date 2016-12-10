@@ -1,5 +1,6 @@
 (function ($) {
 
+    // base model for christmas list
     var ChristmasList = Backbone.Model.extend({
         defaults: {
             id: 'aaaaaa',
@@ -37,16 +38,38 @@
 
     l = new ChristmasList({id: 'a123456'});
 
-//    l.fetch({
-//        success: function(l) {
-//            console.log(JSON.stringify(l));
-//        }
-//    });
-//
-//    for (i=0; i < l.get('items').length; i++) {
-//        var item = new Item({title: l.get('items')[i].title});
-//        itemList.add(item);
-//    };
+    var ListIdView = Backbone.View.extend({
+        events: {
+            'click button#my-button': 'changeStuff'
+        },
+        initialize: function () {
+            //_.bindAll(this, 'render');
+            this.listenTo(l, 'all', this.render);
+            this.render();
+        },
+        render: function () {
+            var template = _.template($('#search_template').html(), {});
+            this.$el.html(template);
+            console.log('rendered listIdView');
+            return this;
+        },
+        changeStuff: function () {
+            var val = $('#asdf').val();
+            $('#output').text(val);
+            this.model.set('id', val);
+            console.log(this.model.get('id'));
+            l.fetch({
+                success: function(l) {
+                    console.log('fetching list');
+                    console.log(JSON.stringify(l));
+                    for (i=0; i < l.get('items').length; i++) {
+                        var item = new Item({title: l.get('items')[i]});
+                        itemList.add(item);
+                    };
+                }
+            });
+        },
+    });
 
     var Item = Backbone.Model.extend({
         defaults: {
@@ -81,14 +104,15 @@
 
     var itemList = new ItemList;
 
-
-    item_1 = new Item({title: 'cup'});
-    item_2 = new Item({title: 'desk'});
-    item_3 = new Item({title: 'phone'});
-
-    itemList.add(item_1);
-    itemList.add(item_2);
-    itemList.add(item_3);
+    l.fetch({
+        success: function(l) {
+            console.log(JSON.stringify(l));
+            for (i=0; i < l.get('items').length; i++) {
+                var item = new Item({title: l.get('items')[i]});
+                itemList.add(item);
+            };
+        }
+    });
 
     var ListView = Backbone.View.extend({
 
@@ -98,13 +122,21 @@
 
         initialize: function () {
             this.listenTo(itemList, 'all', this.render);
+            this.listenTo(l, 'all', this.render);
             this.render();
         },
 
         render: function () {
             console.log('rendering');
-            this.$el.html(this.template());
-            itemList.each(this.addOne, this);
+
+            var il = new ItemList;
+            for (i=0; i<l.get('items').length; i++) {
+                var item = new Item({title: l.get('items')[i]});
+                il.add(item);
+            }
+
+            this.$el.html(this.template({list_id: l.get('id')}));
+            il.each(this.addOne, this);
             return this;
 
         },
@@ -148,6 +180,9 @@
 
             var headerView = new HeaderView();
             this.$('#header-container').html(headerView.render().el);
+
+            var listIdView = new ListIdView({model: l});
+            this.$('#list-id-view-container').html(listIdView.render().el);
         },
 
     });
