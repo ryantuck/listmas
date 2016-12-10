@@ -1,21 +1,14 @@
 import boto3
-from boto3.dynamodb.types import TypeDeserializer
 
 
 def get_list(event, context):
 
-    deser = TypeDeserializer()
+    table = boto3.resource('dynamodb').Table('lists')
 
-    response = boto3.client('dynamodb').get_item(
-        TableName='lists',
-        Key={
-            'id': {
-                'S': event['id'],
-            },
-        },
-    )
+    response = table.get_item(Key={'id': event.get('id')})
 
-    return {
-        k: deser.deserialize(v)
-        for k, v in response['Item'].items()
-    }
+    return response.get('Item', {
+        'error': 'item not found',
+        'id': event.get('id'),
+        'items': None
+    })

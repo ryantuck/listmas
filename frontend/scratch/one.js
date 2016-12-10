@@ -62,7 +62,7 @@
             this.$el.html(this.template());
             var self = this;
             this.model.fetch({
-                success: function(x) {
+                success: function(res) {
                     self.render();
                 }
             });
@@ -72,10 +72,16 @@
 
             console.log('rendering appview');
 
-            this.$('#stuff').empty();
+            this.$('#list ul').empty();
 
-            for (i=0; i<this.model.get('items').length; i++) {
-                this.$('#stuff').append('<li>'+l.get('items')[i]+'</li>');
+            if (this.model.get('items') === null) {
+                this.$('#list p').text('no items!');
+            }
+            else {
+                this.$('#list p').text('');
+                for (i=0; i<this.model.get('items').length; i++) {
+                    this.$('#list ul').append('<li>'+l.get('items')[i]+'</li>');
+                }
             }
         },
 
@@ -86,11 +92,16 @@
             console.log(this.model.get('id'));
             var self = this;
             this.model.fetch({
-                success: function() {
+                success: function(res) {
                     console.log('fetched list');
+                    console.log(res);
                     console.log(self.model);
                     self.render();
-                }
+                },
+                error: function() {
+                    console.log('error fetching list');
+                    self.render();
+                },
             });
         },
 
