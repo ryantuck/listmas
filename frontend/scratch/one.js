@@ -51,7 +51,8 @@
         el: $('#main-div'),
 
         events: {
-            'click button#my-button': 'changeStuff'
+            'click button#my-button': 'changeStuff',
+            'click button#add-button': 'addItem'
         },
 
         template: _.template($('#app').html()),
@@ -90,7 +91,9 @@
             $('#output').text(val);
             this.model.set('id', val);
             console.log(this.model.get('id'));
+
             var self = this;
+
             this.model.fetch({
                 success: function(res) {
                     console.log('fetched list');
@@ -103,6 +106,29 @@
                     self.render();
                 },
             });
+        },
+
+        addItem: function () {
+
+            var items = this.model.get('items');
+
+            var newItem = $('#new-item').val();
+
+            items.push(newItem);
+
+            var self = this;
+
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('saved model');
+                    $('#new-item').val('');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error saving model');
+                },
+            });
+
         },
 
     });
