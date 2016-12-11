@@ -1,0 +1,3 @@
+#!/bin/bash
+
+aws --profile rt s3 sync ./frontend s3://listmas.io
