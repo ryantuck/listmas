@@ -46,13 +46,44 @@
         }
     });
 
+    var ItemView = Backbone.View.extend({
+
+        tagName: 'li',
+
+        template: _.template($('#item').html()),
+
+        events: {
+//            'click button.delete': 'alertIndex'
+        },
+
+        defaults: {
+            title: 'some present'
+        },
+
+        initialize: function (options) {
+            this.options = _.extend(this.defaults, options);
+            _.bindAll(this, 'render');
+            this.render();
+        },
+
+        render: function () {
+            this.$el.html(this.template({title: this.options.title}));
+            return this;
+        },
+
+        alertIndex: function () {
+            var idx = this.$el.index();
+        }
+    });
+
     var AppView = Backbone.View.extend({
 
         el: $('#main-div'),
 
         events: {
             'click button#my-button': 'changeStuff',
-            'click button#add-button': 'addItem'
+            'click button#add-button': 'addItem',
+            'click button.delete': 'deleteItem'
         },
 
         template: _.template($('#app').html()),
@@ -81,7 +112,8 @@
             else {
                 this.$('#list p').text('');
                 for (i=0; i<this.model.get('items').length; i++) {
-                    this.$('#list ul').append('<li>'+l.get('items')[i]+'</li>');
+                    var iv = new ItemView({title: l.get('items')[i]});
+                    this.$('#list ul').append(iv.el);
                 }
             }
         },
@@ -126,6 +158,28 @@
                 },
                 error: function(res) {
                     console.log('error saving model');
+                },
+            });
+
+        },
+
+        deleteItem: function (e) {
+
+            // gross hack
+            var idx = $(e.currentTarget.parentElement.parentElement).index();
+
+            var items = this.model.get('items');
+
+            items.splice(idx, 1);
+
+            var self = this;
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('delete successful');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error deleting item');
                 },
             });
 
