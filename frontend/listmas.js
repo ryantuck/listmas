@@ -67,6 +67,8 @@
             title: 'some present',
             is_published: false,
             is_claimed: false,
+            viewing: false,
+            editing: false,
         },
 
         initialize: function (options) {
@@ -78,26 +80,66 @@
         render: function () {
             this.$el.html(this.template({title: this.options.title}));
 
-            this.$('.is_published').hide();
-            this.$('.is_claimed').hide();
+            console.log(this.options);
 
-            this.$('.publish').show();
-            this.$('.delete').show();
-            this.$('.claim').hide();
+            if (this.options.viewing) {
 
+                if (this.options.is_published) {
+                    console.log('viewing = true');
 
-            if (this.options.is_published) {
-                this.$('.delete').hide();
-                this.$('.publish').hide();
-                this.$('.claim').show();
-
-                this.$('.is_published').show();
-
-                if (this.options.is_claimed) {
-                    this.$('.is_claimed').show();
+                    this.$('.delete').hide();
+                    this.$('.publish').hide();
                     this.$('.claim').hide();
+
+                    if (this.options.is_published) {
+
+                        console.log('is_published = true');
+                        if (this.options.is_claimed) {
+                            console.log('is_claimed = true');
+                            this.$('.claim').hide();
+                            this.$('.is_claimed').show();
+                        } else {
+                            this.$('.claim').show();
+                            this.$('.is_claimed').hide();
+                        }
+                    }
+                } else {
+                    this.$el.hide();
                 }
+            } else if (this.options.editing) {
+
+                console.log('editing = true');
+
+                this.$('.claim').hide();
+                this.$('.is_claimed').hide();
+
+                if (this.options.is_published) {
+                    console.log('is_published = true');
+                    this.$('.is_published').show();
+                    this.$('.publish').hide();
+                    this.$('.delete').hide();
+                } else {
+                    this.$('.is_published').hide();
+                    this.$('.publish').show();
+                    this.$('.delete').show();
+                }
+            } else {
+                console.log('neither viewing or editing');
             }
+
+//            if (this.options.is_published) {
+//                this.$('.delete').hide();
+//                this.$('.publish').hide();
+//                this.$('.claim').show();
+//
+//                this.$('.is_published').show();
+//
+//
+//                if (this.options.is_claimed) {
+//                    this.$('.is_claimed').show();
+//                    this.$('.claim').hide();
+//                }
+//            }
 
             return this;
         },
@@ -114,12 +156,20 @@
             'click button.delete': 'deleteItem',
             'click button#generate-list': 'generateId',
             'click button.publish': 'publishItem',
-            'click button.claim': 'claimItem'
+            'click button.claim': 'claimItem',
+            'click button#start-edit': 'setEditing',
+            'click button#start-view': 'setViewing',
         },
 
         template: _.template($('#app').html()),
 
-        initialize: function () {
+        defaults: {
+            viewing: false,
+            editing: false,
+        },
+
+        initialize: function (options) {
+            this.options = _.extend(this.defaults, options);
             console.log('initializing appview');
             _.bindAll(this, 'render');
             this.$el.html(this.template());
@@ -131,12 +181,32 @@
 
         render: function () {
 
+            if (this.options.viewing === false) {
+                if (this.options.editing === false) {
+                    // nothing yet selected
+                    this.$('#check-owner').show();
+                    this.$('#add-item-container').hide();
+                    this.$('#list').hide();
+
+                } else {
+                    // editing
+                    this.$('#check-owner').hide();
+                    this.$('#add-item-container').show();
+                    this.$('#list').show();
+                }
+            } else {
+                // viewing
+                this.$('#check-owner').hide();
+                this.$('#add-item-container').hide();
+                this.$('#list').show();
+
+            }
+
             console.log('rendering appview');
 
             this.$('#missing-list-container').hide();
 
             if (typeof this.model.get('id') != 'undefined') {
-                console.log(this.model);
                 this.$('#current-list-id').text(this.model.get('id'));
                 this.$('#current-list-container').show();
             }
@@ -156,7 +226,13 @@
             else {
                 this.$('#list p').text('');
                 for (i=0; i<this.model.get('items').length; i++) {
-                    var iv = new ItemView(this.model.get('items')[i]);
+                    var iv = new ItemView({
+                        title: this.model.get('items')[i].title,
+                        is_published: this.model.get('items')[i].is_published,
+                        is_claimed: this.model.get('items')[i].is_claimed,
+                        viewing: this.options.viewing,
+                        editing: this.options.editing,
+                    });
                     this.$('#list ul').append(iv.el);
                 }
             }
@@ -174,8 +250,6 @@
             this.model.fetch({
                 success: function(res) {
                     console.log('fetched list');
-                    console.log(res);
-                    console.log(self.model);
                     self.render();
                 },
                 error: function() {
@@ -282,6 +356,25 @@
             }
         },
 
+        setEditing: function () {
+            if (confirm("you're about to edit this list. please be nice and make sure it's yours 🙃 ")) {
+                this.$('#check-owner').hide();
+                this.$('#add-item-container').show();
+                this.options.editing = true;
+                this.render();
+            }
+        },
+
+        setViewing: function () {
+            if (confirm("you definitely want to view this list? if it's yours, the magic of christmas will be ruined 😳")) {
+                this.options.viewing = true;
+                console.log(this.options);
+                this.$('#check-owner').hide();
+                this.$('#add-item-container').hide();
+                this.render();
+            }
+        },
+
         generateId: function () {
 
             var self = this;
@@ -307,7 +400,26 @@
 
     });
 
-    app = new AppView({model: new ChristmasList});
+    // load base homepage or specific list depending on url hash
+
+    var xmasList = new ChristmasList;
+
+    if (location.hash.charAt(0) === '#') {
+        var hashValue = location.hash.slice(1);
+
+        xmasList.set('id', hashValue);
+
+        xmasList.fetch({
+            success: function(res) {
+                console.log('fetched list');
+            },
+            error: function() {
+                console.log('error fetching list');
+            },
+        });
+    }
+
+    app = new AppView({model: xmasList});
 
 
 })(jQuery);
