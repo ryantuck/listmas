@@ -57,15 +57,6 @@
 
     idGenerator = new IdGenerator;
 
-    //l = new ChristmasList({id: 'a123456'});
-
-//    l.fetch({
-//        success: function(l) {
-//            console.log('fetching list');
-//            console.log(JSON.stringify(l));
-//        }
-//    });
-
     var ItemView = Backbone.View.extend({
 
         tagName: 'li',
@@ -73,7 +64,9 @@
         template: _.template($('#item').html()),
 
         defaults: {
-            title: 'some present'
+            title: 'some present',
+            is_published: false,
+            is_claimed: false,
         },
 
         initialize: function (options) {
@@ -84,8 +77,31 @@
 
         render: function () {
             this.$el.html(this.template({title: this.options.title}));
+
+            this.$('.is_published').hide();
+            this.$('.is_claimed').hide();
+
+            this.$('.publish').show();
+            this.$('.delete').show();
+            this.$('.claim').hide();
+
+
+            if (this.options.is_published) {
+                this.$('.delete').hide();
+                this.$('.publish').hide();
+                this.$('.claim').show();
+
+                this.$('.is_published').show();
+
+                if (this.options.is_claimed) {
+                    this.$('.is_claimed').show();
+                    this.$('.claim').hide();
+                }
+            }
+
             return this;
         },
+
     });
 
     var AppView = Backbone.View.extend({
@@ -96,7 +112,9 @@
             'click button#fetch-list': 'fetchList',
             'click button#add-button': 'addItem',
             'click button.delete': 'deleteItem',
-            'click button#generate-list': 'generateId'
+            'click button#generate-list': 'generateId',
+            'click button.publish': 'publishItem',
+            'click button.claim': 'claimItem'
         },
 
         template: _.template($('#app').html()),
@@ -138,7 +156,7 @@
             else {
                 this.$('#list p').text('');
                 for (i=0; i<this.model.get('items').length; i++) {
-                    var iv = new ItemView({title: this.model.get('items')[i]});
+                    var iv = new ItemView(this.model.get('items')[i]);
                     this.$('#list ul').append(iv.el);
                 }
             }
@@ -171,7 +189,11 @@
 
             var items = this.model.get('items');
 
-            var newItem = $('#new-item').val();
+            var newItem = {
+                title: $('#new-item').val(),
+                is_published: false,
+                is_claimed: false,
+            };
 
             items.push(newItem);
 
@@ -210,6 +232,54 @@
                 },
             });
 
+        },
+
+        publishItem: function (e) {
+
+            var idx = $(e.currentTarget.parentElement.parentElement).index();
+
+            var items = this.model.get('items');
+
+            items[idx].is_published = true;
+
+            this.model.set('items', items);
+
+            var self = this;
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('item update successful');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error updating item');
+                },
+            });
+
+        },
+
+        claimItem: function (e) {
+
+            var idx = $(e.currentTarget.parentElement.parentElement).index();
+
+            var items = this.model.get('items');
+
+            if (confirm('you definitely want to claim this?') === true) {
+
+                items[idx].is_claimed = true;
+
+                this.model.set('items', items);
+
+                var self = this;
+                this.model.save({}, {
+                    success: function(res) {
+                        console.log('item claim successful');
+                        self.render();
+                    },
+                    error: function(res) {
+                        console.log('error claiming item');
+                    },
+                });
+            }
         },
 
         generateId: function () {
