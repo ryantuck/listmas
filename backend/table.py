@@ -12,4 +12,5 @@ def scan():
 
 
 if __name__ == '__main__':
-    print scan()
+    for record in scan():
+        print record
