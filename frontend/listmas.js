@@ -404,6 +404,8 @@
 
     var xmasList = new ChristmasList;
 
+    var app;
+
     if (location.hash.charAt(0) === '#') {
         var hashValue = location.hash.slice(1);
 
@@ -412,14 +414,16 @@
         xmasList.fetch({
             success: function(res) {
                 console.log('fetched list');
+                app = new AppView({model: xmasList});
             },
             error: function() {
                 console.log('error fetching list');
             },
         });
+    } else {
+        app = new AppView({model: xmasList});
     }
 
-    app = new AppView({model: xmasList});
 
 
 })(jQuery);
