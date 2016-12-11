@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>backbone testing</title>
+  <title>listmas</title>
 <style>
     .item {
         background-color: #333;
@@ -49,21 +49,25 @@
             <h1>listmas</h1>
         </div>
         <div id="list-id-generator">
-            <button id="generate-list">generate list</button>
-            <p id="new-list-id"></p>
+            <button id="generate-list">new list</button>
         </div>
         <div id="list-id-container">
             <input type="text" id="asdf">
-            <button id="my-button">fetch list</button>
-            <p id="output"></p>
+            <button id="fetch-list">fetch list</button>
         </div>
-        <div id="add-item-container">
-            <input type="text" id="new-item">
-            <button id="add-button">add item</button>
+        <div id="current-list-container">
+        <h3 id="current-list-id"></h3>
+            <div id="add-item-container">
+                <input type="text" id="new-item">
+                <button id="add-button">add item</button>
+            </div>
+            <div id="list">
+                <p></p>
+                <ul id="stuff"></ul>
+            </div>
         </div>
-        <div id="list">
-            <p></p>
-            <ul id="stuff"></ul>
+        <div id="missing-list-container">
+            <p>list does not exist!</p>
         </div>
     </script>
 

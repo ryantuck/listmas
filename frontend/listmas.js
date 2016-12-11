@@ -3,7 +3,7 @@
     // base model for christmas list
     var ChristmasList = Backbone.Model.extend({
         defaults: {
-            id: 'aaaaaa',
+//            id: null,
             items: [],
         },
         urlRoot: 'https://m2mr88rewf.execute-api.us-east-1.amazonaws.com/prod/list',
@@ -36,24 +36,41 @@
         }
     });
 
-    l = new ChristmasList({id: 'a123456'});
+    var IdGenerator = Backbone.Model.extend({
+        urlRoot: 'https://m2mr88rewf.execute-api.us-east-1.amazonaws.com/prod/id',
+        getCustomUrl: function (method) {
+            switch (method) {
 
-    l.fetch({
-        success: function(l) {
-            console.log('fetching list');
-            console.log(JSON.stringify(l));
+                case 'read':
+                    console.log('attempting read');
+                    return this.urlRoot;
+                    break;
+            }
+        },
+        sync: function (method, model, options) {
+            options || (options = {});
+            options.url = this.getCustomUrl(method.toLowerCase());
+
+            return Backbone.sync.apply(this, arguments);
         }
     });
+
+    idGenerator = new IdGenerator;
+
+    //l = new ChristmasList({id: 'a123456'});
+
+//    l.fetch({
+//        success: function(l) {
+//            console.log('fetching list');
+//            console.log(JSON.stringify(l));
+//        }
+//    });
 
     var ItemView = Backbone.View.extend({
 
         tagName: 'li',
 
         template: _.template($('#item').html()),
-
-        events: {
-//            'click button.delete': 'alertIndex'
-        },
 
         defaults: {
             title: 'some present'
@@ -69,10 +86,6 @@
             this.$el.html(this.template({title: this.options.title}));
             return this;
         },
-
-        alertIndex: function () {
-            var idx = this.$el.index();
-        }
     });
 
     var AppView = Backbone.View.extend({
@@ -80,9 +93,10 @@
         el: $('#main-div'),
 
         events: {
-            'click button#my-button': 'changeStuff',
+            'click button#fetch-list': 'fetchList',
             'click button#add-button': 'addItem',
-            'click button.delete': 'deleteItem'
+            'click button.delete': 'deleteItem',
+            'click button#generate-list': 'generateId'
         },
 
         template: _.template($('#app').html()),
@@ -91,37 +105,51 @@
             console.log('initializing appview');
             _.bindAll(this, 'render');
             this.$el.html(this.template());
-            var self = this;
-            this.model.fetch({
-                success: function(res) {
-                    self.render();
-                }
-            });
+
+            this.listenTo(idGenerator, 'change', this.render);
+
+            this.render();
         },
 
         render: function () {
 
             console.log('rendering appview');
 
+            this.$('#missing-list-container').hide();
+
+            if (typeof this.model.get('id') != 'undefined') {
+                console.log(this.model);
+                this.$('#current-list-id').text(this.model.get('id'));
+                this.$('#current-list-container').show();
+            }
+            else {
+                this.$('#current-list-container').hide();
+            }
+
             this.$('#list ul').empty();
 
             if (this.model.get('items') === null) {
-                this.$('#list p').text('no items!');
+                this.$('#current-list-container').hide();
+                this.$('#missing-list-container').show();
+            }
+            else if (this.model.get('items').length === 0) {
+                this.$('#list p').text('no items in list');
             }
             else {
                 this.$('#list p').text('');
                 for (i=0; i<this.model.get('items').length; i++) {
-                    var iv = new ItemView({title: l.get('items')[i]});
+                    var iv = new ItemView({title: this.model.get('items')[i]});
                     this.$('#list ul').append(iv.el);
                 }
             }
         },
 
-        changeStuff: function () {
+        fetchList: function () {
+
+            // read input from list id input box
             var val = $('#asdf').val();
-            $('#output').text(val);
+            $('#current-list-id').text(val);
             this.model.set('id', val);
-            console.log(this.model.get('id'));
 
             var self = this;
 
@@ -184,9 +212,32 @@
 
         },
 
+        generateId: function () {
+
+            var self = this;
+
+            idGenerator.fetch({
+                success: function (res) {
+
+                    self.model.set('id', idGenerator.id);
+                    self.model.set('items', []);
+
+                    self.model.save({}, {
+                        success: function() {
+                            console.log('model updated');
+                            self.render();
+                        },
+                        error: function() {
+                            console.log('error saving model');
+                        }
+                    });
+                },
+            });
+        },
+
     });
 
-    app = new AppView({model: l});
+    app = new AppView({model: new ChristmasList});
 
 
 })(jQuery);
