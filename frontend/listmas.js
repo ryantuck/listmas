@@ -1,88 +1,192 @@
-(function($){
+(function ($) {
 
-    // `Backbone.sync`: Overrides persistence storage with dummy function. This enables use of `Model.destroy()` without raising an error.
-    Backbone.sync = function(method, model, success, error){
-        success();
-    }
-
-    var Item = Backbone.Model.extend({
-        urlRoot: '/items',
+    // base model for christmas list
+    var ChristmasList = Backbone.Model.extend({
         defaults: {
-            title: 'gift title'
+            id: 'aaaaaa',
+            items: [],
+        },
+        urlRoot: 'https://m2mr88rewf.execute-api.us-east-1.amazonaws.com/prod/list',
+        getCustomUrl: function (method) {
+            switch (method) {
+
+                case 'create':
+                    console.log('attempting creation');
+                    return this.urlRoot;
+                    break;
+                case 'read':
+                    console.log('attempting read');
+                    return this.urlRoot + '/' + this.id;
+                    break;
+                case 'update':
+                    console.log('attempting update');
+                    return this.urlRoot;
+                    break;
+                case 'delete':
+                    console.log('attempting delete');
+                    return this.urlRoot + '/' + this.id;
+                    break;
+            }
+        },
+        sync: function (method, model, options) {
+            options || (options = {});
+            options.url = this.getCustomUrl(method.toLowerCase());
+
+            return Backbone.sync.apply(this, arguments);
         }
     });
 
-    var List = Backbone.Collection.extend({
-        model: Item,
-        url: '/items'
+    l = new ChristmasList({id: 'a123456'});
+
+    l.fetch({
+        success: function(l) {
+            console.log('fetching list');
+            console.log(JSON.stringify(l));
+        }
     });
 
     var ItemView = Backbone.View.extend({
-        tagName: 'li', // name of tag to be created
-        // `ItemView`s now respond to two clickable actions for each `Item`: swap and delete.
+
+        tagName: 'li',
+
+        template: _.template($('#item').html()),
+
         events: {
-            'click span.delete': 'remove'
+//            'click button.delete': 'alertIndex'
         },
-        // `initialize()` now binds model change/removal to the corresponding handlers below.
-        initialize: function(){
-            _.bindAll(this, 'render', 'unrender', 'remove'); // every function that uses 'this' as the current object should be in here
 
-            this.model.bind('change', this.render);
-            this.model.bind('remove', this.unrender);
+        defaults: {
+            title: 'some present'
         },
-        // `render()` now includes two extra `span`s corresponding to the actions swap and delete.
-        render: function(){
-            $(this.el).html('<span style="color:black;">'+this.model.get('title')+'</span> &nbsp; &nbsp; <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>');
-            return this; // for chainable calls, like .render().el
-        },
-        // `unrender()`: Makes Model remove itself from the DOM.
-        unrender: function(){
-            $(this.el).remove();
-        },
-        // `remove()`: We use the method `destroy()` to remove a model from its collection. Normally this would also delete the record from its persistent storage, but we have overridden that (see above).
-        remove: function(){
-            this.model.destroy();
-        }
-    });
 
-    // Because the new features (swap and delete) are intrinsic to each `Item`, there is no need to modify `ListView`.
-    var ListView = Backbone.View.extend({
-        el: $('body'), // el attaches to existing element
-        events: {
-            'click button#add': 'addItem'
-        },
-        initialize: function(){
-            _.bindAll(this, 'render', 'addItem', 'appendItem'); // every function that uses 'this' as the current object should be in here
-
-            this.collection = new List();
-            this.collection.bind('add', this.appendItem); // collection event binder
-
-            this.counter = 0;
+        initialize: function (options) {
+            this.options = _.extend(this.defaults, options);
+            _.bindAll(this, 'render');
             this.render();
         },
-        render: function(){
-            var self = this;
-            $(this.el).append("<button id='add'>Add list item</button>");
-            $(this.el).append("<ul></ul>");
-            _(this.collection.models).each(function(item){ // in case collection is not empty
-                self.appendItem(item);
-            }, this);
+
+        render: function () {
+            this.$el.html(this.template({title: this.options.title}));
+            return this;
         },
-        addItem: function(){
-            this.counter++;
-            var item = new Item();
-            item.set({
-                part2: item.get('part2') + this.counter // modify item defaults
-            });
-            this.collection.add(item);
-        },
-        appendItem: function(item){
-            var itemView = new ItemView({
-                model: item
-            });
-            $('ul', this.el).append(itemView.render().el);
+
+        alertIndex: function () {
+            var idx = this.$el.index();
         }
     });
 
-    var listView = new ListView();
+    var AppView = Backbone.View.extend({
+
+        el: $('#main-div'),
+
+        events: {
+            'click button#my-button': 'changeStuff',
+            'click button#add-button': 'addItem',
+            'click button.delete': 'deleteItem'
+        },
+
+        template: _.template($('#app').html()),
+
+        initialize: function () {
+            console.log('initializing appview');
+            _.bindAll(this, 'render');
+            this.$el.html(this.template());
+            var self = this;
+            this.model.fetch({
+                success: function(res) {
+                    self.render();
+                }
+            });
+        },
+
+        render: function () {
+
+            console.log('rendering appview');
+
+            this.$('#list ul').empty();
+
+            if (this.model.get('items') === null) {
+                this.$('#list p').text('no items!');
+            }
+            else {
+                this.$('#list p').text('');
+                for (i=0; i<this.model.get('items').length; i++) {
+                    var iv = new ItemView({title: l.get('items')[i]});
+                    this.$('#list ul').append(iv.el);
+                }
+            }
+        },
+
+        changeStuff: function () {
+            var val = $('#asdf').val();
+            $('#output').text(val);
+            this.model.set('id', val);
+            console.log(this.model.get('id'));
+
+            var self = this;
+
+            this.model.fetch({
+                success: function(res) {
+                    console.log('fetched list');
+                    console.log(res);
+                    console.log(self.model);
+                    self.render();
+                },
+                error: function() {
+                    console.log('error fetching list');
+                    self.render();
+                },
+            });
+        },
+
+        addItem: function () {
+
+            var items = this.model.get('items');
+
+            var newItem = $('#new-item').val();
+
+            items.push(newItem);
+
+            var self = this;
+
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('saved model');
+                    $('#new-item').val('');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error saving model');
+                },
+            });
+
+        },
+
+        deleteItem: function (e) {
+
+            // gross hack
+            var idx = $(e.currentTarget.parentElement.parentElement).index();
+
+            var items = this.model.get('items');
+
+            items.splice(idx, 1);
+
+            var self = this;
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('delete successful');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error deleting item');
+                },
+            });
+
+        },
+
+    });
+
+    app = new AppView({model: l});
+
+
 })(jQuery);
