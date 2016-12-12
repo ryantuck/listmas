@@ -4,7 +4,7 @@ import string
 def generate_id(event, context):
 
     new_id = ''.join(
-        random.choice(string.ascii_lowercase + string.ascii_uppercase)
+        random.choice(string.ascii_lowercase)
         for _ in range(6)
     )
 
