@@ -3,30 +3,8 @@
 <head>
   <meta charset="utf-8">
   <title>listmas</title>
-<style>
-    .item {
-        background-color: #333;
-        margin: 10px;
-    }
-
-    #main-div {
-        background-color: #090;
-    }
-
-    #list {
-        background-color: #b00;
-        width: 400px;
-    }
-
-    * {
-        color: #000;
-        font-family: helvetica;
-    }
-
-    #list-id-view-container {
-        color: black;
-    }
-</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
@@ -34,42 +12,89 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
 
-  <div id="main-div"></div>
+  <div class='columns'>
+      <div class='column auto'></div>
+      <div class='column is-half'>
+        <div id="header" style="text-align:center" class="container">
+            <br>
+            <p class="title is-1">listmas</p>
+            <p class="subtitle is-4">social, shareable christmas lists</p>
+        </div>
+        <hr>
+        <br>
+          <div id="main-div"></div>
+          <br>
+          <br>
+      </div>
+      <div class='column auto'></div>
+  </div>
+
 
     <script type="text/template" id="item">
-        <div class="item-container">
-            <h3><%= title %></h3>
-            <button class="delete">delete</button>
-            <button class="publish">publish</button>
-            <button class="claim">claim</button>
-            <p>
-                <span class="is_published">published</span> | <span class="is_claimed">claimed</span></p>
+        <div class="item-container box">
+            <div class="columns">
+                <div class="column">
+                    <h3 class="title is-3"><%= title %></h3>
+                </div>
+                <div class="column" style="text-align:right">
+                    <button class="delete-item button is-danger">delete</button>
+                    <button class="publish-item button is-success">publish</button>
+                    <button class="claim-item button is-success">claim</button>
+                    <button class="is-published button is-success is-disabled">published</button>
+                    <button class="is-claimed button is-success is-disabled">claimed</button>
+                </div>
+            </div>
         </div>
+        <br>
     </script>
 
     <script type="text/template" id="app">
 
-        <div id="header">
-            <h1>listmas</h1>
+        <div class="columns container">
+            <div id="list-id-generator" class="column">
+                <button id="generate-list" class="button is-primary">create new list</button>
+            </div>
+            <div class="column" style="text-align:center">
+                <p>or</p>
+            </div>
+            <div id="list-id-container" class="column">
+                <div class="control is-grouped">
+                    <p class="control is-expanded">
+                        <input type="text" id="asdf" placeholder="abc123" class="input">
+                    </p>
+                    <p>
+                        <button type="submit" id="fetch-list" class="button is-primary">fetch list</button>
+                    </p>
+                </div>
+            </div>
         </div>
-        <div id="list-id-generator">
-            <button id="generate-list">new list</button>
-        </div>
-        <div id="list-id-container">
-            <input type="text" id="asdf">
-            <button id="fetch-list">fetch list</button>
-        </div>
-        <div id="current-list-container">
-            <h3 id="current-list-id"></h3>
-            <div id="check-owner">
-                <h4>What do you want to do?</h4>
-                <button id="start-edit">edit my list</button>
-                <button id="start-view">view this list</button>
+        <hr>
+        <div id="current-list-container" class="container">
+            <div class="columns">
+                <div class="column">
+                    <p class="title is-3">list: <span id="current-list-id"></span></p>
+                </div>
+                <div class="column">
+                    <p>shareable link:</p>
+                    <input class="input" id="shareable-link" type="text" value="http://listmas.io" readonly>
+                </div>
+            </div>
+            <br>
+            <div id="check-owner" style="text-align:center">
+                <button id="start-edit" class="button is-primary is-medium">edit my list</button>
+                <button id="start-view" class="button is-primary is-medium">view this list</button>
             </div>
             <div id="add-item-container">
-                <input type="text" id="new-item">
-                <button id="add-button">add item</button>
+                <div class="control is-grouped">
+                    <p class="control is-expanded">
+                        <input type="text" id="new-item" placeholder="rubik's cube" class="input">
+                    </p>
+                    <p>
+                        <button type="submit" id="add-button" class="button is-primary">add item</button>
+                    </p>
+                </div>
             </div>
+            <br>
             <div id="list">
                 <p></p>
                 <ul id="stuff"></ul>

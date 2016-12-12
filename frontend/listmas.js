@@ -80,27 +80,26 @@
         render: function () {
             this.$el.html(this.template({title: this.options.title}));
 
-            console.log(this.options);
-
             if (this.options.viewing) {
 
                 if (this.options.is_published) {
                     console.log('viewing = true');
 
-                    this.$('.delete').hide();
-                    this.$('.publish').hide();
-                    this.$('.claim').hide();
+                    this.$('.delete-item').hide();
+                    this.$('.publish-item').hide();
+                    this.$('.claim-item').hide();
+                    this.$('.is-published').hide();
 
                     if (this.options.is_published) {
 
                         console.log('is_published = true');
                         if (this.options.is_claimed) {
                             console.log('is_claimed = true');
-                            this.$('.claim').hide();
-                            this.$('.is_claimed').show();
+                            this.$('.claim-item').hide();
+                            this.$('.is-claimed').show();
                         } else {
-                            this.$('.claim').show();
-                            this.$('.is_claimed').hide();
+                            this.$('.claim-item').show();
+                            this.$('.is-claimed').hide();
                         }
                     }
                 } else {
@@ -110,34 +109,36 @@
 
                 console.log('editing = true');
 
-                this.$('.claim').hide();
-                this.$('.is_claimed').hide();
+                this.$('.claim-item').hide();
+                this.$('.is-claimed').hide();
 
                 if (this.options.is_published) {
                     console.log('is_published = true');
-                    this.$('.is_published').show();
-                    this.$('.publish').hide();
-                    this.$('.delete').hide();
+                    this.$('.is-published').show();
+                    this.$('.publish-item').hide();
+                    this.$('.delete-item').hide();
                 } else {
-                    this.$('.is_published').hide();
-                    this.$('.publish').show();
-                    this.$('.delete').show();
+                    this.$('.claim-item').hide();
+                    this.$('.is-claimed').hide();
+                    this.$('.is-published').hide();
+                    this.$('.publish-item').show();
+                    this.$('.delete-item').show();
                 }
             } else {
                 console.log('neither viewing or editing');
             }
 
 //            if (this.options.is_published) {
-//                this.$('.delete').hide();
-//                this.$('.publish').hide();
-//                this.$('.claim').show();
+//                this.$('.delete-item').hide();
+//                this.$('.publish-item').hide();
+//                this.$('.claim-item').show();
 //
-//                this.$('.is_published').show();
+//                this.$('.is-published').show();
 //
 //
 //                if (this.options.is_claimed) {
-//                    this.$('.is_claimed').show();
-//                    this.$('.claim').hide();
+//                    this.$('.is-claimed').show();
+//                    this.$('.claim-item').hide();
 //                }
 //            }
 
@@ -153,10 +154,10 @@
         events: {
             'click button#fetch-list': 'fetchList',
             'click button#add-button': 'addItem',
-            'click button.delete': 'deleteItem',
+            'click button.delete-item': 'deleteItem',
             'click button#generate-list': 'generateId',
-            'click button.publish': 'publishItem',
-            'click button.claim': 'claimItem',
+            'click button.publish-item': 'publishItem',
+            'click button.claim-item': 'claimItem',
             'click button#start-edit': 'setEditing',
             'click button#start-view': 'setViewing',
         },
@@ -208,6 +209,7 @@
 
             if (typeof this.model.get('id') != 'undefined') {
                 this.$('#current-list-id').text(this.model.get('id'));
+                this.$('#shareable-link').val('http://listmas.io#' + this.model.get('id'));
                 this.$('#current-list-container').show();
             }
             else {
@@ -289,7 +291,7 @@
         deleteItem: function (e) {
 
             // gross hack
-            var idx = $(e.currentTarget.parentElement.parentElement).index();
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 
@@ -310,7 +312,8 @@
 
         publishItem: function (e) {
 
-            var idx = $(e.currentTarget.parentElement.parentElement).index();
+            // lol
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 
@@ -333,7 +336,8 @@
 
         claimItem: function (e) {
 
-            var idx = $(e.currentTarget.parentElement.parentElement).index();
+            // vomsauce
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 
@@ -368,7 +372,6 @@
         setViewing: function () {
             if (confirm("you definitely want to view this list? if it's yours, the magic of christmas will be ruined 😳")) {
                 this.options.viewing = true;
-                console.log(this.options);
                 this.$('#check-owner').hide();
                 this.$('#add-item-container').hide();
                 this.render();
