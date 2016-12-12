@@ -65,6 +65,7 @@
 
         defaults: {
             title: 'some present',
+            link: null,
             is_published: false,
             is_claimed: false,
             viewing: false,
@@ -78,7 +79,24 @@
         },
 
         render: function () {
-            this.$el.html(this.template({title: this.options.title}));
+            this.$el.html(this.template({
+                title: this.options.title,
+                link: this.options.link
+            }));
+
+            if (typeof this.options.link === 'undefined') {
+                this.$('.item-link').hide();
+            }
+
+            console.log(this.options);
+            if (this.options.link === null) {
+                this.$('.item-link').hide();
+            }
+
+            if (this.options.link === '') {
+                this.$('.item-link').hide();
+            }
+
 
             if (this.options.viewing) {
 
@@ -127,20 +145,6 @@
             } else {
                 console.log('neither viewing or editing');
             }
-
-//            if (this.options.is_published) {
-//                this.$('.delete-item').hide();
-//                this.$('.publish-item').hide();
-//                this.$('.claim-item').show();
-//
-//                this.$('.is-published').show();
-//
-//
-//                if (this.options.is_claimed) {
-//                    this.$('.is-claimed').show();
-//                    this.$('.claim-item').hide();
-//                }
-//            }
 
             return this;
         },
@@ -230,6 +234,7 @@
                 for (i=0; i<this.model.get('items').length; i++) {
                     var iv = new ItemView({
                         title: this.model.get('items')[i].title,
+                        link: this.model.get('items')[i].link,
                         is_published: this.model.get('items')[i].is_published,
                         is_claimed: this.model.get('items')[i].is_claimed,
                         viewing: this.options.viewing,
@@ -267,6 +272,7 @@
 
             var newItem = {
                 title: $('#new-item').val(),
+                link: $('#new-item-link').val(),
                 is_published: false,
                 is_claimed: false,
             };
@@ -279,6 +285,7 @@
                 success: function(res) {
                     console.log('saved model');
                     $('#new-item').val('');
+                    $('#new-item-link').val('');
                     self.render();
                 },
                 error: function(res) {
@@ -291,7 +298,7 @@
         deleteItem: function (e) {
 
             // gross hack
-            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 
@@ -313,7 +320,7 @@
         publishItem: function (e) {
 
             // lol
-            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 
@@ -337,7 +344,7 @@
         claimItem: function (e) {
 
             // vomsauce
-            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement).index();
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
 
             var items = this.model.get('items');
 

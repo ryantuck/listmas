@@ -5,6 +5,14 @@
   <title>listmas</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.2.3/css/bulma.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    html { height: 100%; }
+    body {
+        background-color: #fff;
+        min-height: 100%;
+    }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
@@ -12,36 +20,44 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
 
-  <div class='columns'>
-      <div class='column auto'></div>
-      <div class='column is-half'>
-        <div id="header" style="text-align:center" class="container">
-            <br>
-            <p class="title is-1">listmas</p>
-            <p class="subtitle is-4">social, shareable christmas lists</p>
-        </div>
-        <hr>
-        <br>
-          <div id="main-div"></div>
-          <br>
-          <br>
+  <div class="section">
+      <div class='columns'>
+          <div class='column auto'></div>
+          <div class='column is-half'>
+            <div id="header" style="text-align:center" class="container">
+                <p class="title is-1">listmas</p>
+                <p class="subtitle is-4">social, shareable christmas lists</p>
+            </div>
+            <hr>
+              <div id="main-div"></div>
+              <br>
+              <br>
+          </div>
+          <div class='column auto'></div>
       </div>
-      <div class='column auto'></div>
   </div>
 
 
     <script type="text/template" id="item">
-        <div class="item-container box">
-            <div class="columns">
-                <div class="column">
-                    <h3 class="title is-3"><%= title %></h3>
-                </div>
-                <div class="column" style="text-align:right">
-                    <button class="delete-item button is-danger">delete</button>
-                    <button class="publish-item button is-success">publish</button>
-                    <button class="claim-item button is-success">claim</button>
-                    <button class="is-published button is-success is-disabled">published</button>
-                    <button class="is-claimed button is-success is-disabled">claimed</button>
+        <div class="container">
+            <div class="item-container box">
+                <div class="columns">
+                    <div class="column">
+                        <div class="item-display">
+                            <h3 class="title is-3"><%= title %></h3>
+                            <a class="item-link" href="<%= link %>" target="_newtab">link</a>
+                        </div>
+                    </div>
+                    <div class="column" style="text-align:right">
+                        <button class="edit-item button is-info is-outlined">edit</button>
+                        <button class="delete-item button is-danger is-outlined">delete</button>
+                        <button class="publish-item button is-success is-outlined">publish</button>
+
+                        <button class="claim-item button is-success">claim</button>
+
+                        <button class="is-published button is-success is-disabled">published</button>
+                        <button class="is-claimed button is-success is-disabled">claimed</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,47 +67,36 @@
     <script type="text/template" id="app">
 
         <div class="columns container">
-            <div id="list-id-generator" class="column">
-                <button id="generate-list" class="button is-primary">create new list</button>
-            </div>
-            <div class="column" style="text-align:center">
-                <p>or</p>
-            </div>
-            <div id="list-id-container" class="column">
-                <div class="control is-grouped">
-                    <p class="control is-expanded">
-                        <input type="text" id="asdf" placeholder="abc123" class="input">
-                    </p>
-                    <p>
-                        <button type="submit" id="fetch-list" class="button is-primary">fetch list</button>
-                    </p>
-                </div>
+            <div id="list-id-generator" class="column" style="text-align:center">
+                <button id="generate-list" class="button is-success is-medium is-outlined">create new list</button>
             </div>
         </div>
         <hr>
         <div id="current-list-container" class="container">
             <div class="columns">
                 <div class="column">
-                    <p class="title is-3">list: <span id="current-list-id"></span></p>
+                    <p class="title is-3">list id: <span id="current-list-id"></span></p>
                 </div>
                 <div class="column">
-                    <p>shareable link:</p>
                     <input class="input" id="shareable-link" type="text" value="http://listmas.io" readonly>
                 </div>
             </div>
-            <br>
+            <hr>
             <div id="check-owner" style="text-align:center">
-                <button id="start-edit" class="button is-primary is-medium">edit my list</button>
-                <button id="start-view" class="button is-primary is-medium">view this list</button>
+                <button id="start-edit" class="button is-info is-medium is-outlined">edit this list</button>
+                <button id="start-view" class="button is-success is-medium is-outlined">view this list</button>
             </div>
             <div id="add-item-container">
-                <div class="control is-grouped">
-                    <p class="control is-expanded">
+                <div class="columns">
+                    <p class="column is-half">
                         <input type="text" id="new-item" placeholder="rubik's cube" class="input">
                     </p>
-                    <p>
-                        <button type="submit" id="add-button" class="button is-primary">add item</button>
+                    <p class="column is-one-third">
+                        <input type="text" id="new-item-link" placeholder="http://www.amazon.com" class="input">
                     </p>
+                    <div class="column" style="text-align:right">
+                        <button type="submit" id="add-button" class="button is-info is-outlined">add item</button>
+                    </div>
                 </div>
             </div>
             <br>
