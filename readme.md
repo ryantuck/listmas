@@ -1,5 +1,11 @@
 # listmas
 
-dumb christmas list.
+social, shareable christmas lists.
 
-`backbone.js` front-end. serverless backend.
+`backbone.js` frontend.
+
+[bulma](http://bulma.io/) css.
+
+s3-hosted.
+
+api gateway / lambda / dynamodb backend.
