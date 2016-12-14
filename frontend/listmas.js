@@ -3,7 +3,6 @@
     // base model for christmas list
     var ChristmasList = Backbone.Model.extend({
         defaults: {
-//            id: null,
             items: [],
         },
         urlRoot: 'https://m2mr88rewf.execute-api.us-east-1.amazonaws.com/prod/list',
@@ -70,6 +69,7 @@
             is_claimed: false,
             viewing: false,
             editing: false,
+            is_being_edited: false,
         },
 
         initialize: function (options) {
@@ -79,6 +79,7 @@
         },
 
         render: function () {
+
             this.$el.html(this.template({
                 title: this.options.title,
                 link: this.options.link
@@ -97,6 +98,24 @@
                 this.$('.item-link').hide();
             }
 
+            if (this.options.is_being_edited === true) {
+                this.$('.item-edit').show();
+                this.$('.item-display').hide();
+
+                this.$('.item-editing-title').val(this.options.title);
+                this.$('.item-editing-link').val(this.options.link);
+
+                this.$('.stop-edit-item').show();
+                this.$('.edit-item').hide();
+
+            } else {
+                this.$('.item-edit').hide();
+                this.$('.item-display').show();
+
+                this.$('.stop-edit-item').hide();
+                this.$('.edit-item').show();
+
+            }
 
             if (this.options.viewing) {
 
@@ -164,6 +183,8 @@
             'click button.claim-item': 'claimItem',
             'click button#start-edit': 'setEditing',
             'click button#start-view': 'setViewing',
+            'click button.edit-item': 'setEditItem',
+            'click button.stop-edit-item': 'stopEditItem',
         },
 
         template: _.template($('#app').html()),
@@ -239,6 +260,7 @@
                         is_claimed: this.model.get('items')[i].is_claimed,
                         viewing: this.options.viewing,
                         editing: this.options.editing,
+                        is_being_edited: this.model.get('items')[i].is_being_edited,
                     });
                     this.$('#list ul').append(iv.el);
                 }
@@ -290,6 +312,50 @@
                 },
                 error: function(res) {
                     console.log('error saving model');
+                },
+            });
+
+        },
+
+        setEditItem: function (e) {
+
+            console.log('setting item to edit mode');
+
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
+            var items = this.model.get('items');
+
+            items[idx].is_being_edited = true;
+
+            this.model.set('items', items);
+
+            this.render();
+        },
+
+        stopEditItem: function (e) {
+
+            console.log(e);
+            console.log('exiting edit mode');
+
+            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
+            var items = this.model.get('items');
+
+            var currentDisplay = $(e.currentTarget.parentElement.parentElement).find('.item-edit');
+
+            items[idx].title = currentDisplay.find('.item-editing-title').val();
+            items[idx].link = currentDisplay.find('.item-editing-link').val();
+
+            items[idx].is_being_edited = false;
+
+            this.model.set('items', items);
+
+            var self = this;
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('item update successful');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error updating item');
                 },
             });
 
