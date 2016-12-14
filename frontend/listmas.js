@@ -222,8 +222,8 @@
             this.$('#missing-list-container').hide();
 
             if (typeof this.model.get('id') != 'undefined') {
-                this.$('#current-list-id').text(this.model.get('id'));
-                this.$('#shareable-link').val('http://listmas.io#' + this.model.get('id'));
+                this.$('#shareable-link').attr('href', 'http://listmas.io#' + this.model.get('id'));
+                this.$('#shareable-link').text('http://listmas.io#' + this.model.get('id'));
                 this.$('#current-list-container').show();
             }
             else {
@@ -231,13 +231,14 @@
             }
 
             this.$('#list ul').empty();
+            this.$('#list p').hide();
 
             if (this.model.get('items') === null) {
                 this.$('#current-list-container').hide();
                 this.$('#missing-list-container').show();
             }
             else if (this.model.get('items').length === 0) {
-                this.$('#list p').text('no items in list');
+                this.$('#list p').show();
             }
             else {
                 this.$('#list p').text('');
@@ -259,7 +260,6 @@
 
             // read input from list id input box
             var val = $('#asdf').val();
-            $('#current-list-id').text(val);
             this.model.set('id', val);
 
             var self = this;

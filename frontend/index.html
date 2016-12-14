@@ -11,6 +11,19 @@
         background-color: #fff;
         min-height: 100%;
     }
+
+    a {
+        color: #3273DC;
+    }
+
+    a:visited {
+        color: #3273DC;
+    }
+
+    i:hover {
+        color: #3273DC;
+    }
+
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -35,7 +48,20 @@
           </div>
           <div class='column auto'></div>
       </div>
+
   </div>
+
+    <footer class="footer" style="background-color: #fff;">
+      <div class="container" style="text-align:center">
+          <p>ryan <span>
+            <a class="icon" target="_newwtab" href="https://github.com/ryantuck/listmas">
+              <i class="fa fa-github"></i>
+            </a>
+          </span> tuck
+          </p>
+      </div>
+    </footer>
+
 
     <script type="text/template" id="item">
         <div class="container">
@@ -44,18 +70,24 @@
                     <div class="column">
                         <div class="item-display">
                             <h3 class="title is-3 item-display-title"><%= title %></h3>
-                            <a class="item-link" href="<%= link %>" target="_newtab">link</a>
+                            <p class="title is-5">
+                                <a class="item-link" href="<%= link %>" target="_newtab">link</a>
+                            </p>
                         </div>
                         <div class="item-edit">
+                            <p class="control">
                             <input type="text" placeholder="rubik's cube" class="input item-editing-title">
+                            </p>
+                            <p class="control">
                             <input type="text" placeholder="https://amazon.com" class="input item-editing-link">
+                            </p>
                         </div>
                     </div>
                     <div class="column item-buttons" style="text-align:right">
-                        <button class="delete-item button is-danger is-outlined">delete</button>
-
                         <button class="edit-item button is-info is-outlined">edit</button>
                         <button class="stop-edit-item button is-info is-outlined">done</button>
+
+                        <button class="delete-item button is-danger is-outlined">delete</button>
 
                         <button class="claim-item button is-success is-outlined">claim</button>
                         <button class="cancel-claim-item button is-dark is-outlined">nope</button>
@@ -72,61 +104,68 @@
     <script type="text/template" id="app">
 
         <div class="columns container">
-            <div class="column">
-                <p>Make a list. Add items. Include links. Share your link with friends and family so they can claim gifts for you.</p>
-            </div>
             <div id="list-id-generator" class="column" style="text-align:center">
-                <button id="generate-list" class="button is-success is-medium is-outlined">create new list</button>
+                <p>make a list.</p><p>add items.</p><p>include links.</p><p>share.</p><p>no double-buying.</p><p>get what you want.</p>
+                <br>
+                <button id="generate-list" class="button is-success is-medium is-outlined">new list</button>
             </div>
         </div>
-        <hr>
         <div id="current-list-container" class="container">
+            <hr>
             <div class="columns">
-                <div class="column">
-                    <p class="title is-3">list id: <span id="current-list-id"></span></p>
-                </div>
-                <div class="column">
-                    <input class="input" id="shareable-link" type="text" value="http://listmas.io" readonly>
+                <div class="column" style="text-align:center">
+                    <p class="title is-3">
+                    <a id="shareable-link" href="http://listmas.io"></a>
+                    </p>
                 </div>
             </div>
-            <hr>
+            <br>
             <div id="check-owner" style="text-align:center">
                 <div id="list-options-div">
                     <button id="start-edit" class="button is-info is-medium is-outlined">edit this list</button>
                     <button id="start-view" class="button is-success is-medium is-outlined">view this list</button>
                 </div>
                 <div id="confirm-edit-div">
-                    <p>You're gonna edit this list. Please be nice :)</p>
+                    <p class="title is-1">  🙃  </p>
+                    <p class="title is-5">you're gonna edit this list - please be nice</p>
+                    <br>
                     <button id="cancel-edit" class="button is-dark is-medium is-outlined">nope</button>
                     <button id="confirm-edit" class="button is-info is-medium is-outlined">yep, edit</button>
                 </div>
                 <div id="confirm-view-div">
-                    <p>You're gonna view this list, and see which items on this list are claimed :)</p>
+                    <p class="title is-1">  😬  </p>
+                    <p class="title is-5">you're gonna view this list, and see which items on this list are claimed   </p>
+                    <br>
                     <button id="cancel-view" class="button is-dark is-medium is-outlined">nope</button>
                     <button id="confirm-view" class="button is-success is-medium is-outlined">yep, view</button>
                 </div>
             </div>
             <div id="add-item-container">
                 <div class="columns">
-                    <p class="column is-half">
+                    <p class="column is-half" style="text-align:center">
                         <input type="text" id="new-item" placeholder="rubik's cube" class="input">
                     </p>
-                    <p class="column is-one-third">
-                        <input type="text" id="new-item-link" placeholder="http://www.amazon.com" class="input">
+                    <p class="column is-one-third" style="text-align:center">
+                        <input type="text" id="new-item-link" placeholder="http://amazon.com/cubes/0" class="input">
                     </p>
-                    <div class="column" style="text-align:right">
+                    <div class="column" style="text-align:center">
                         <button type="submit" id="add-button" class="button is-info is-outlined">add item</button>
                     </div>
                 </div>
             </div>
             <br>
             <div id="list">
-                <p></p>
+                <div style="text-align:center">
+                    <p class="title is-1">  😧  </p>
+                    <p class="title is-3">no items in list yet</p>
+                </div>
                 <ul id="stuff"></ul>
             </div>
         </div>
-        <div id="missing-list-container">
-            <p>list does not exist!</p>
+        <div id="missing-list-container" style="text-align:center">
+            <br>
+            <p class="title is-1"> 🤔   </p>
+            <p class="title is-3">list does not exist!</p>
         </div>
     </script>
 
