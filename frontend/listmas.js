@@ -65,7 +65,6 @@
         defaults: {
             title: 'some present',
             link: null,
-            is_published: false,
             is_claimed: false,
             viewing: false,
             editing: false,
@@ -119,29 +118,20 @@
 
             if (this.options.viewing) {
 
-                if (this.options.is_published) {
-                    console.log('viewing = true');
+                console.log('viewing = true');
 
-                    this.$('.delete-item').hide();
-                    this.$('.publish-item').hide();
+                this.$('.delete-item').hide();
+                this.$('.edit-item').hide();
+
+                if (this.options.is_claimed) {
+                    console.log('is_claimed = true');
                     this.$('.claim-item').hide();
-                    this.$('.is-published').hide();
-
-                    if (this.options.is_published) {
-
-                        console.log('is_published = true');
-                        if (this.options.is_claimed) {
-                            console.log('is_claimed = true');
-                            this.$('.claim-item').hide();
-                            this.$('.is-claimed').show();
-                        } else {
-                            this.$('.claim-item').show();
-                            this.$('.is-claimed').hide();
-                        }
-                    }
+                    this.$('.is-claimed').show();
                 } else {
-                    this.$el.hide();
+                    this.$('.claim-item').show();
+                    this.$('.is-claimed').hide();
                 }
+
             } else if (this.options.editing) {
 
                 console.log('editing = true');
@@ -149,18 +139,6 @@
                 this.$('.claim-item').hide();
                 this.$('.is-claimed').hide();
 
-                if (this.options.is_published) {
-                    console.log('is_published = true');
-                    this.$('.is-published').show();
-                    this.$('.publish-item').hide();
-                    this.$('.delete-item').hide();
-                } else {
-                    this.$('.claim-item').hide();
-                    this.$('.is-claimed').hide();
-                    this.$('.is-published').hide();
-                    this.$('.publish-item').show();
-                    this.$('.delete-item').show();
-                }
             } else {
                 console.log('neither viewing or editing');
             }
@@ -179,7 +157,6 @@
             'click button#add-button': 'addItem',
             'click button.delete-item': 'deleteItem',
             'click button#generate-list': 'generateId',
-            'click button.publish-item': 'publishItem',
             'click button.claim-item': 'claimItem',
             'click button#start-edit': 'setEditing',
             'click button#start-view': 'setViewing',
@@ -256,7 +233,6 @@
                     var iv = new ItemView({
                         title: this.model.get('items')[i].title,
                         link: this.model.get('items')[i].link,
-                        is_published: this.model.get('items')[i].is_published,
                         is_claimed: this.model.get('items')[i].is_claimed,
                         viewing: this.options.viewing,
                         editing: this.options.editing,
@@ -295,7 +271,6 @@
             var newItem = {
                 title: $('#new-item').val(),
                 link: $('#new-item-link').val(),
-                is_published: false,
                 is_claimed: false,
             };
 
@@ -378,30 +353,6 @@
                 },
                 error: function(res) {
                     console.log('error deleting item');
-                },
-            });
-
-        },
-
-        publishItem: function (e) {
-
-            // lol
-            var idx = $(e.currentTarget.parentElement.parentElement.parentElement.parentElement.parentElement).index();
-
-            var items = this.model.get('items');
-
-            items[idx].is_published = true;
-
-            this.model.set('items', items);
-
-            var self = this;
-            this.model.save({}, {
-                success: function(res) {
-                    console.log('item update successful');
-                    self.render();
-                },
-                error: function(res) {
-                    console.log('error updating item');
                 },
             });
 
