@@ -9,11 +9,3 @@ social, shareable christmas lists.
 s3-hosted.
 
 api gateway / lambda / dynamodb backend.
-
-## todo
-
-x edit presents
-x turn off publishing
-x in-app click checks
-
-- better messaging
