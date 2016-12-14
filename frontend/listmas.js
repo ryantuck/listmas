@@ -84,6 +84,9 @@
                 link: this.options.link
             }));
 
+            this.$('.confirm-claim-item').hide();
+            this.$('.cancel-claim-item').hide();
+
             if (typeof this.options.link === 'undefined') {
                 this.$('.item-link').hide();
             }
@@ -157,7 +160,6 @@
             'click button#add-button': 'addItem',
             'click button.delete-item': 'deleteItem',
             'click button#generate-list': 'generateId',
-            'click button.claim-item': 'claimItem',
             'click button#start-edit': 'confirmEditing',
             'click button#start-view': 'confirmViewing',
             'click button#confirm-edit': 'setEditing',
@@ -166,6 +168,9 @@
             'click button#cancel-view': 'cancelViewing',
             'click button.edit-item': 'setEditItem',
             'click button.stop-edit-item': 'stopEditItem',
+            'click button.claim-item': 'confirmClaim',
+            'click button.confirm-claim-item': 'claimItem',
+            'click button.cancel-claim-item': 'cancelClaim',
         },
 
         template: _.template($('#app').html()),
@@ -372,23 +377,21 @@
 
             var items = this.model.get('items');
 
-            if (confirm('you definitely want to claim this?') === true) {
 
-                items[idx].is_claimed = true;
+            items[idx].is_claimed = true;
 
-                this.model.set('items', items);
+            this.model.set('items', items);
 
-                var self = this;
-                this.model.save({}, {
-                    success: function(res) {
-                        console.log('item claim successful');
-                        self.render();
-                    },
-                    error: function(res) {
-                        console.log('error claiming item');
-                    },
-                });
-            }
+            var self = this;
+            this.model.save({}, {
+                success: function(res) {
+                    console.log('item claim successful');
+                    self.render();
+                },
+                error: function(res) {
+                    console.log('error claiming item');
+                },
+            });
         },
 
         confirmEditing: function () {
@@ -423,7 +426,25 @@
             this.$('#confirm-edit-div').hide();
         },
 
+        confirmClaim: function (e) {
 
+            console.log('confirming claim');
+            var currentDisplay = $(e.currentTarget.parentElement);
+
+            currentDisplay.find('.claim-item').hide();
+            currentDisplay.find('.confirm-claim-item').show();
+            currentDisplay.find('.cancel-claim-item').show();
+        },
+
+        cancelClaim: function (e) {
+
+            console.log('canceling claim');
+            var currentDisplay = $(e.currentTarget.parentElement);
+
+            currentDisplay.find('.claim-item').show();
+            currentDisplay.find('.confirm-claim-item').hide();
+            currentDisplay.find('.cancel-claim-item').hide();
+        },
 
         setEditing: function () {
 
