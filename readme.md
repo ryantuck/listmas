@@ -13,7 +13,7 @@ api gateway / lambda / dynamodb backend.
 ## todo
 
 x edit presents
-- turn off publishing
-- in-app click checks
+x turn off publishing
+x in-app click checks
 
 - better messaging

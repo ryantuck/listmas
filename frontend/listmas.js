@@ -158,8 +158,12 @@
             'click button.delete-item': 'deleteItem',
             'click button#generate-list': 'generateId',
             'click button.claim-item': 'claimItem',
-            'click button#start-edit': 'setEditing',
-            'click button#start-view': 'setViewing',
+            'click button#start-edit': 'confirmEditing',
+            'click button#start-view': 'confirmViewing',
+            'click button#confirm-edit': 'setEditing',
+            'click button#confirm-view': 'setViewing',
+            'click button#cancel-edit': 'cancelEditing',
+            'click button#cancel-view': 'cancelViewing',
             'click button.edit-item': 'setEditItem',
             'click button.stop-edit-item': 'stopEditItem',
         },
@@ -183,6 +187,9 @@
         },
 
         render: function () {
+
+            this.$('#confirm-edit-div').hide();
+            this.$('#confirm-view-div').hide();
 
             if (this.options.viewing === false) {
                 if (this.options.editing === false) {
@@ -384,22 +391,54 @@
             }
         },
 
+        confirmEditing: function () {
+
+            console.log('confirming editing');
+            this.$('#list-options-div').hide();
+            this.$('#confirm-view-div').hide();
+            this.$('#confirm-edit-div').show();
+        },
+
+        confirmViewing: function () {
+
+            console.log('confirming editing');
+            this.$('#list-options-div').hide();
+            this.$('#confirm-view-div').show();
+            this.$('#confirm-edit-div').hide();
+        },
+
+        cancelEditing: function () {
+
+            console.log('canceling editing');
+            this.$('#list-options-div').show();
+            this.$('#confirm-view-div').hide();
+            this.$('#confirm-edit-div').hide();
+        },
+
+        cancelViewing: function () {
+
+            console.log('canceling viewing');
+            this.$('#list-options-div').show();
+            this.$('#confirm-view-div').hide();
+            this.$('#confirm-edit-div').hide();
+        },
+
+
+
         setEditing: function () {
-            if (confirm("you're about to edit this list. please be nice and make sure it's yours 🙃 ")) {
-                this.$('#check-owner').hide();
-                this.$('#add-item-container').show();
-                this.options.editing = true;
-                this.render();
-            }
+
+            this.$('#check-owner').hide();
+            this.$('#add-item-container').show();
+            this.options.editing = true;
+            this.render();
         },
 
         setViewing: function () {
-            if (confirm("you definitely want to view this list? if it's yours, the magic of christmas will be ruined 😳")) {
-                this.options.viewing = true;
-                this.$('#check-owner').hide();
-                this.$('#add-item-container').hide();
-                this.render();
-            }
+
+            this.options.viewing = true;
+            this.$('#check-owner').hide();
+            this.$('#add-item-container').hide();
+            this.render();
         },
 
         generateId: function () {
