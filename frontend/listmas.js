@@ -222,8 +222,8 @@
             this.$('#missing-list-container').hide();
 
             if (typeof this.model.get('id') != 'undefined') {
-                this.$('#shareable-link').attr('href', 'http://listmas.io#' + this.model.get('id'));
-                this.$('#shareable-link').text('http://listmas.io#' + this.model.get('id'));
+                this.$('#shareable-link').attr('href', 'http://listmas.io/' + this.model.get('id'));
+                this.$('#shareable-link').text('http://listmas.io/' + this.model.get('id'));
                 this.$('#current-list-container').show();
             }
             else {
