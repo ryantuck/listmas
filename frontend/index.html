@@ -43,8 +43,9 @@
           <div class='column auto'></div>
           <div class='column is-half'>
             <div id="header" style="text-align:center" class="container">
-                <p class="title is-1">listmas</p>
-                <p class="subtitle is-4">social, shareable christmas lists</p>
+                <p class="title is-1" style="color:red; font-size:120px;">Listmas</p>
+                <p class="subtitle is-4">Create, share, and enjoy your gifts!</p>
+                <img src="file:///Users/donovantuck/Documents/GitHub/listmas/frontend/giphy.webp" style="width:200px">
             </div>
             <hr>
               <div id="main-div"></div>
@@ -58,11 +59,11 @@
 
     <footer class="footer" style="background-color: #fff;">
       <div class="container" style="text-align:center">
-          <p>ryan <span>
+          <p>Ryan & Donovan <span>
             <a class="icon" target="_newwtab" href="https://github.com/ryantuck/listmas">
               <i class="fa fa-github"></i>
             </a>
-          </span> tuck
+          </span> Tuck
           </p>
       </div>
     </footer>
@@ -89,16 +90,16 @@
                         </div>
                     </div>
                     <div class="column item-buttons" style="text-align:right">
-                        <button class="edit-item button is-info is-outlined">edit</button>
-                        <button class="stop-edit-item button is-info is-outlined">done</button>
+                        <button class="edit-item button is-info is-outlined">Edit</button>
+                        <button class="stop-edit-item button is-info is-outlined">Done</button>
 
-                        <button class="delete-item button is-danger is-outlined">delete</button>
+                        <button class="delete-item button is-danger is-outlined">Delete</button>
 
-                        <button class="claim-item button is-success is-outlined">claim</button>
-                        <button class="cancel-claim-item button is-dark is-outlined">nope</button>
+                        <button class="claim-item button is-success is-outlined">Claim</button>
+                        <button class="cancel-claim-item button is-dark is-outlined">Nope</button>
                         <button class="confirm-claim-item button is-success is-outlined">yep, claim</button>
 
-                        <button class="is-claimed button is-success is-disabled">claimed</button>
+                        <button class="is-claimed button is-success is-disabled">CLAIMED</button>
                     </div>
                 </div>
             </div>
@@ -110,9 +111,14 @@
 
         <div class="columns container">
             <div id="list-id-generator" class="column" style="text-align:center">
-                <p>make a list.</p><p>add items.</p><p>include links.</p><p>share.</p><p>no double-buying.</p><p>get what you want.</p>
+                <p>Step 1: Make a list.</p>
+                <p>Step 2: Add items.</p>
+                <p>Step 3: Include links.</p>
+                <p>Step 4: Share with friends and family.</p>
+                <p>Step 5: No double-buying.</p>
+                <p>Step 6: Get what you want!</p>
                 <br>
-                <button id="generate-list" class="button is-success is-medium is-outlined">new list</button>
+                <button id="generate-list" class="button is-success is-medium is-outlined">New list</button>
             </div>
         </div>
         <div id="current-list-container" class="container">
@@ -141,8 +147,8 @@
                     <p class="title is-1">  😬  </p>
                     <p class="title is-5">you're gonna view this list, and see which items on this list are claimed   </p>
                     <br>
-                    <button id="cancel-view" class="button is-dark is-medium is-outlined">nope</button>
-                    <button id="confirm-view" class="button is-success is-medium is-outlined">yep, view</button>
+                    <button id="cancel-view" class="button is-dark is-medium is-outlined">Nope</button>
+                    <button id="confirm-view" class="button is-success is-medium is-outlined">Yes, view</button>
                 </div>
             </div>
             <div id="add-item-container">
@@ -177,4 +183,3 @@
   <script src="listmas.js"></script>
 </body>
 </html>
-
