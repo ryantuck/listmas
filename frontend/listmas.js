@@ -35,6 +35,7 @@
         }
     });
 
+    // Base model for generating IDs for new lists.
     var IdGenerator = Backbone.Model.extend({
         urlRoot: 'https://m2mr88rewf.execute-api.us-east-1.amazonaws.com/prod/id',
         getCustomUrl: function (method) {
@@ -54,8 +55,10 @@
         }
     });
 
+    // Instantiate the idGenerator object.
     idGenerator = new IdGenerator;
 
+    // View for any particular item.
     var ItemView = Backbone.View.extend({
 
         tagName: 'li',
@@ -77,6 +80,7 @@
             this.render();
         },
 
+        // this runs when the element is rendered.
         render: function () {
 
             this.$el.html(this.template({
@@ -151,10 +155,12 @@
 
     });
 
+    // View for the entire app.
     var AppView = Backbone.View.extend({
 
         el: $('#main-div'),
 
+        // defines what button clicks correspond to particular functions
         events: {
             'click button#fetch-list': 'fetchList',
             'click button#add-button': 'addItem',
@@ -175,6 +181,7 @@
 
         template: _.template($('#app').html()),
 
+        // by default, a user is neither viewing nor editing a list
         defaults: {
             viewing: false,
             editing: false,
@@ -186,6 +193,7 @@
             _.bindAll(this, 'render');
             this.$el.html(this.template());
 
+            // re-render if id generator changes
             this.listenTo(idGenerator, 'change', this.render);
 
             this.render();
@@ -193,9 +201,12 @@
 
         render: function () {
 
+            // hide both the edit and change divs on start
             this.$('#confirm-edit-div').hide();
             this.$('#confirm-view-div').hide();
 
+            // logic for showing / hiding viewing / editing divs
+            // depending on state of view
             if (this.options.viewing === false) {
                 if (this.options.editing === false) {
                     // nothing yet selected
@@ -219,8 +230,10 @@
 
             console.log('rendering appview');
 
+            // by default, don't show the error message that a user is missing a list
             this.$('#missing-list-container').hide();
 
+            // if the id of the model *is* defined, show the shareable link
             if (typeof this.model.get('id') != 'undefined') {
                 this.$('#shareable-link').attr('href', 'http://listmas.io/' + this.model.get('id'));
                 this.$('#shareable-link').text('http://listmas.io/' + this.model.get('id'));
@@ -230,16 +243,20 @@
                 this.$('#current-list-container').hide();
             }
 
+            // start out with an empty list of items
             this.$('#list ul').empty();
             this.$('#list p').hide();
 
+            // if list does not exist, show missing-list div
             if (this.model.get('items') === null) {
                 this.$('#current-list-container').hide();
                 this.$('#missing-list-container').show();
             }
+            // if list exists with no items, just show a blank list container
             else if (this.model.get('items').length === 0) {
                 this.$('#list p').show();
             }
+            // otherwise, populate the items list
             else {
                 this.$('#list p').text('');
                 for (i=0; i<this.model.get('items').length; i++) {
@@ -256,6 +273,7 @@
             }
         },
 
+        // function to call API to get list
         fetchList: function () {
 
             // read input from list id input box
@@ -276,20 +294,24 @@
             });
         },
 
+        // call API to add item
         addItem: function () {
 
             var items = this.model.get('items');
 
+            // create item
             var newItem = {
                 title: $('#new-item').val(),
                 link: $('#new-item-link').val(),
                 is_claimed: false,
             };
 
+            // add item to model's list of items
             items.push(newItem);
 
             var self = this;
 
+            // call API to save item
             this.model.save({}, {
                 success: function(res) {
                     console.log('saved model');
@@ -304,6 +326,7 @@
 
         },
 
+        // change item to edit mode
         setEditItem: function (e) {
 
             console.log('setting item to edit mode');
@@ -318,6 +341,7 @@
             this.render();
         },
 
+        // exit edit mode
         stopEditItem: function (e) {
 
             console.log(e);
@@ -348,6 +372,7 @@
 
         },
 
+        // delete item from list
         deleteItem: function (e) {
 
             // gross hack
@@ -370,6 +395,7 @@
 
         },
 
+        // mark item as claimed
         claimItem: function (e) {
 
             // vomsauce
@@ -462,6 +488,7 @@
             this.render();
         },
 
+        // function for generating a new ID
         generateId: function () {
 
             var self = this;
@@ -493,6 +520,7 @@
 
     var app;
 
+    // if unique id in url, load that list
     if (location.hash.charAt(0) === '#') {
         var hashValue = location.hash.slice(1);
 
@@ -507,10 +535,10 @@
                 console.log('error fetching list');
             },
         });
-    } else {
+    }
+    // otherwise, load up a fresh app view
+    else {
         app = new AppView({model: xmasList});
     }
-
-
 
 })(jQuery);
