@@ -43,27 +43,24 @@
           <div class='column auto'></div>
           <div class='column is-half'>
             <div id="header" style="text-align:center" class="container">
-                <p class="title is-1" style="color:red; font-size:120px;">Listmas</p>
-                <p class="subtitle is-4">Create, share, and enjoy your gifts!</p>
-                <img src="giphy.webp" style="width:200px">
+                <p class="title is-1" style="color:red;">listmas</p>
+                <p class="subtitle is-4" style="color:green;">social, shareable christmas lists</p>
             </div>
-            <hr>
               <div id="main-div"></div>
               <br>
               <br>
           </div>
           <div class='column auto'></div>
       </div>
-
   </div>
 
     <footer class="footer" style="background-color: #fff;">
       <div class="container" style="text-align:center">
-          <p>Ryan & Donovan <span>
+          <p>Ryan Tuck <span>
             <a class="icon" target="_newwtab" href="https://github.com/ryantuck/listmas">
               <i class="fa fa-github"></i>
             </a>
-          </span> Tuck
+          </span> Donovan Tuck
           </p>
       </div>
     </footer>
@@ -111,23 +108,28 @@
 
         <div class="columns container">
             <div id="list-id-generator" class="column" style="text-align:center">
-                <p>Step 1: Make a list.</p>
-                <p>Step 2: Add items.</p>
-                <p>Step 3: Include links.</p>
-                <p>Step 4: Share with friends and family.</p>
-                <p>Step 5: No double-buying.</p>
-                <p>Step 6: Get what you want!</p>
+                <img src="giphy.webp" style="width:200px">
+                <p>make your list</p>
+                <p>share with friends and family</p>
+                <p>get what you want</p>
+                <p>no login required</p>
                 <br>
-                <button id="generate-list" class="button is-success is-medium is-outlined">New list</button>
+                <button id="generate-list" class="button is-success is-medium is-outlined">create my list!</button>
             </div>
         </div>
+
         <div id="current-list-container" class="container">
-            <hr>
             <div class="columns">
                 <div class="column" style="text-align:center">
-                    <p class="title is-3">
+                    <hr>
+                    <br>
+                    <p class="title is-2">
                     <a id="shareable-link" href="http://listmas.io"></a>
                     </p>
+                    <p>this is your unique list link. don't lose it!</p>
+                    <br>
+                    <p>share it with people so they can view your list,</p>
+                    <p>or come back to it to edit your list whenever!</p>
                 </div>
             </div>
             <br>
@@ -138,17 +140,17 @@
                 </div>
                 <div id="confirm-edit-div">
                     <p class="title is-1">  🙃  </p>
-                    <p class="title is-5">you're gonna edit this list - please be nice</p>
+                    <p class="title is-5">you're gonna edit this list - hopefully it's yours</p>
                     <br>
                     <button id="cancel-edit" class="button is-dark is-medium is-outlined">nope</button>
                     <button id="confirm-edit" class="button is-info is-medium is-outlined">yep, edit</button>
                 </div>
                 <div id="confirm-view-div">
                     <p class="title is-1">  😬  </p>
-                    <p class="title is-5">you're gonna view this list, and see which items on this list are claimed   </p>
+                    <p class="title is-5">you're gonna view this list, and see which items on it are claimed - if it's yours, turn back now!   </p>
                     <br>
-                    <button id="cancel-view" class="button is-dark is-medium is-outlined">Nope</button>
-                    <button id="confirm-view" class="button is-success is-medium is-outlined">Yes, view</button>
+                    <button id="cancel-view" class="button is-dark is-medium is-outlined">nope</button>
+                    <button id="confirm-view" class="button is-success is-medium is-outlined">yep, view</button>
                 </div>
             </div>
             <div id="add-item-container">
@@ -173,6 +175,7 @@
                 <ul id="stuff"></ul>
             </div>
         </div>
+
         <div id="missing-list-container" style="text-align:center">
             <br>
             <p class="title is-1"> 🤔   </p>

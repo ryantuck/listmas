@@ -235,6 +235,7 @@
 
             // if the id of the model *is* defined, show the shareable link
             if (typeof this.model.get('id') != 'undefined') {
+                this.$('#list-id-generator').hide();
                 this.$('#shareable-link').attr('href', 'http://listmas.io/' + this.model.get('id'));
                 this.$('#shareable-link').text('http://listmas.io/' + this.model.get('id'));
                 this.$('#current-list-container').show();
