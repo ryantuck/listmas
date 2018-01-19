@@ -9,3 +9,9 @@ social, shareable christmas lists.
 s3-hosted.
 
 api gateway / lambda / dynamodb backend.
+
+## develop locally
+
+```
+$ open listmas/frontend/index.html
+```
